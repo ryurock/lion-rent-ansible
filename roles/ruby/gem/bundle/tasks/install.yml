@@ -1,0 +1,10 @@
+- name: Check Install bundle
+  shell: source /etc/profile; gem list | awk '/^bundler/{print $1}'
+  register: result
+  changed_when: result.stdout.find('bundler') != 0
+
+- name: Install RubyGems Bundle
+  shell: source /etc/profile; gem install bundle --no-ri --no-rdoc
+  when: result.stdout.find('bundler') != 0
+
+#- debug: msg="{{ result }}"

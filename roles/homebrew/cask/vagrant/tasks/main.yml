@@ -1,0 +1,8 @@
+- name: Check for installed apps(vagrant)
+  shell: brew cask list | awk '/^vagrant$/{print $1}'
+  register: cask_list
+  changed_when: cask_list.stdout.find('vagrant') != 0
+
+- name: install cask vagrant
+  shell: brew cask install vagrant
+  when: cask_list.stdout.find('vagrant') != 0

@@ -1,0 +1,24 @@
+- name: check installed or not
+  stat: path=/synced/padrino-sample
+  register: installed
+  changed_when: installed.stat.exists is defined and installed.stat.exists == False
+  tags: padrino-sample
+
+- name: create project generate
+  shell: source /etc/profile; padrino g project padrino-sample -t rspec -d datamapper -a mysql  chdir=/synced
+  tags: padrino-sample
+  when: installed.stat.exists is defined and installed.stat.exists == False
+
+- name: bundle install
+  shell: source /etc/profile; bundle install chdir=/synced/padrino-sample
+  when: installed.stat.exists is defined and installed.stat.exists == False
+  tags: padrino-sample
+
+- name: add iptable config unless the rule has not been added
+  shell: |
+      if [ $(grep -c '\-A\ INPUT\ \-p\ tcp\ \-m\ tcp\ \-\-dport\ 3000\ \-j\ ACCEPT' /etc/sysconfig/iptables) -le 0 ];
+      then
+          iptables -I INPUT -p tcp --dport 3000 -j ACCEPT
+      fi
+  ignore_errors: True
+  tags: padrino-sample

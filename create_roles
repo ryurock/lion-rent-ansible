@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+set -e
+
+if [ $# -ne 1 ]; then
+  echo "Failed attach path"
+  exit 1
+fi
+
+path=$1
+
+# 新規にディレクトリを作成する
+if [ ! -e "${path}" ]; then
+  mkdir -p ${path}
+fi
+
+if [ ! -e "${path}/files" ]; then
+  mkdir ${path}/files
+fi
+
+if [ ! -e "${path}/templates" ]; then
+  mkdir ${path}/templates
+fi
+if [ ! -e "${path}/vars" ]; then
+  mkdir ${path}/vars
+fi
+if [ ! -e "${path}/handlers" ]; then
+  mkdir ${path}/handlers
+fi
+if [ ! -e "${path}/tasks" ]; then
+  mkdir ${path}/tasks
+fi
+
+touch ${path}/files/.gitignore ${path}/templates/.gitignore ${path}/vars/.gitignore ${path}/tasks/main.yml ${path}/handlers/.gitignore

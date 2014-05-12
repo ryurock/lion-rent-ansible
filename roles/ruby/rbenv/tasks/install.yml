@@ -1,0 +1,26 @@
+- name: Create rbenv group
+  group: name=rbenv state=present
+
+- name: Check rbenv Exists
+  shell: cat /etc/group | grep rbenv;
+  register: result
+  changed_when: result.stdout.find('rbenv') != 0
+
+- name: User add rbenv group
+  user: name={{ ansible_env.SUDO_USER }} groups={{ rbenvGroup }}
+  changed_when: result.stdout.find('rbenv') != 0
+
+- name: Git Clone rbenv
+  git: repo=https://github.com/sstephenson/rbenv.git
+       dest=/usr/local/rbenv
+       update=no
+
+- name: rbenv Create Plugin Dir
+  file: path=/usr/local/rbenv/plugins group=rbenv mode=0775 state=directory
+
+
+- name: rbenv Dir change group
+  file: path=/usr/local/rbenv owner={{ ansible_env.SUDO_USER }} group=rbenv mode=0775 state=directory
+
+- name: rbenv profile Settings
+  template: src=rbenv.j2 dest=/etc/profile.d/rbenv.sh mode=0644

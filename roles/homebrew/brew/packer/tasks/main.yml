@@ -1,0 +1,3 @@
+- name: added brew tap binary
+  shell: brew tap homebrew/binary
+- homebrew: name=packer state=present
